@@ -1,1 +1,5 @@
-import { IncomingMessage } from "node:http";
+declare module 'http'{
+    export interface IncomingMessage {
+        body?:any
+    }
+}
