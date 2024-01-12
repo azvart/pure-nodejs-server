@@ -1,8 +1,3 @@
-import { NodeServer } from "./server/index";
+import { NodeServer } from './server/index';
 
 NodeServer.create([]);
-
-
-
-
-

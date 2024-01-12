@@ -21,7 +21,9 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "index.d.ts"],
+  "exclude": ["node_modules", "index.d.ts", "./src/**/*.js",
+    "./src/**/*.ts", "eslintrc.json"
+  ],
   "files": [
     "./index.d.ts"
   ],

@@ -1,1 +1,4 @@
-export type NodeServerOptions = {    port: number,    env?: string | string [],}
+export type NodeServerOptions = {
+  port: number;
+  env?: string | string[];
+};
