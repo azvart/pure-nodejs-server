@@ -15,12 +15,12 @@ class Route extends EventEmitter{
     }
 
 
-    public add(method:string, path:string, handler:any){
+    public add(method:string, path:string, handler:(req:IncomingMessage, res:ServerResponse) => void){
         super.addListener(`${method} /${path}`, handler);
     }
 
 
-    resolve(req:IncomingMessage, res:ServerResponse){
+    public resolve(req:IncomingMessage, res:ServerResponse){
         const { url, method } = req;
         const isEmitting = this.emit(`${method} ${url}`, req, res);
         if(!isEmitting) {
@@ -29,7 +29,6 @@ class Route extends EventEmitter{
             res.end(JSON.stringify({message: "Page not found"}));
         }
     }
-
 
 
 }

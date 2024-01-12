@@ -1,11 +1,8 @@
 import { NodeServer } from "./server/index";
 
-export const server = new NodeServer();
+NodeServer.create([]);
 
 
-server.controllers([]);
 
-
-server.start()
 
 
