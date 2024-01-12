@@ -1,44 +1,42 @@
 import { Server, IncomingMessage, ServerResponse } from 'node:http';
+import fs from 'node:fs/promises';
+import { nextTick } from 'node:process';
 import Router from "../route/route";
-
+import type { NodeServerOptions } from "../types/server.types";
 
 export class NodeServer extends Server {
+    static create(controllers:any[], options?:NodeServerOptions){
+        const server = new NodeServer();
+        server.controllers(controllers);
+        server.start();
+    }
+
     private readonly port:number;
     private router = Router;
+
     constructor(port = 3000) {
         super();
         this.port = port;
         this.on('listening', () => {
             console.log(`Server running ${JSON.stringify(this.address())}`);
-        })
-        this.on('request', (req:IncomingMessage, res:ServerResponse) => {
-            this.router.resolve(req ,res);
         });
-        this.prependListener('request', (req:IncomingMessage, res:ServerResponse) => {
-            console.log('Prepend listener before each request');
-
-            if(req.headers['content-type'] === 'application/json'){
-                let body = '';
-                req.on('data', (chunk) => {
-                    body += chunk.toString();
-                });
-
-                req.on('end', () => {
-                    body = JSON.parse(body);
-                    req.body = body
-                })
+        this.on('request', (req:IncomingMessage, res:ServerResponse) => {
+            let body = ''
+            res.status = (code) => {
+                res.statusCode = code;
+                return res;
             }
-
-            if(req.headers['content-type']?.split(';')[0] === 'multipart/form-data'){
-                const chunks:any[] = [];
-                req.on('data', (chunk) => {
-                    chunks.push(chunk);
-                });
-                req.on('end', () => {
-                    const result = Buffer.concat(chunks).toString('utf-8');
-                    req.body = result;
-                });
+            res.json = (data) => {
+                res.setHeader("Content-Type","application/json");
+                res.end(JSON.stringify(data));
             }
+            req.on('data', (chunk) => {
+                body += chunk.toString('utf-8')
+            }).on('end', () => {
+                body = JSON.parse(body);
+                req.body = body;
+                return this.router.resolve(req, res);
+            })
         });
     }
 
@@ -52,5 +50,10 @@ export class NodeServer extends Server {
         }
     }
 
+
+
+    private errorMessage(req:IncomingMessage, res:ServerResponse,error:unknown){
+        res.status(400).json(error);
+    }
 
 }
