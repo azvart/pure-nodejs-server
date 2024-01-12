@@ -25,7 +25,7 @@ export class NodeServer extends Server {
 
                 req.on('end', () => {
                     body = JSON.parse(body);
-                    // req.body = body;
+                    req.body = body
                 })
             }
 
@@ -36,7 +36,7 @@ export class NodeServer extends Server {
                 });
                 req.on('end', () => {
                     const result = Buffer.concat(chunks).toString('utf-8');
-                    // req.body = result;
+                    req.body = result;
                 });
             }
         });

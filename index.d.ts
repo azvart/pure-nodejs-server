@@ -1,5 +1,8 @@
-declare module 'http'{
-    export interface IncomingMessage {
+import 'http';
+
+
+declare module 'http' {
+    interface IncomingMessage {
         body?:any
     }
 }
